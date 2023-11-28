@@ -70,8 +70,9 @@ def main():
         output_image = output_image.quantize(colors=colors)
         output_image = output_image.convert("L")
         output_image.save(out_file, optimize=False)
-    except Exception as ex:
+    except Exception:
         error('Error while saving file "' + out_file + '".')
+
 
 if __name__ == "__main__":
     main()
