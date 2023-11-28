@@ -51,29 +51,27 @@ def main():
         error('File "' + in_file + '" does not exist or is not readable.')
         sys.exit(1)
 
-    if not os.path.isfile(in_file):
-        error('File "' + in_file + '" does not exist or is not readable.')
-        sys.exit(1)
-
     input_image = Image.open(in_file)
     width, height = input_image.size
 
     if width != height:
-        error("The image must be square (ratio 1:1).")
+        error("The input image must be square (ratio 1:1).")
         sys.exit(1)
 
     output_image = input_image.resize((size, size), resample=Image.BILINEAR).resize(
         input_image.size, Image.NEAREST
     )
 
-    output_image = output_image.convert("RGB")
-    contrast_factor = factor
-    enhancer = ImageEnhance.Contrast(output_image)
-    output_image = enhancer.enhance(contrast_factor)
-    output_image = output_image.quantize(colors=colors)
-    output_image = output_image.convert("L")
-    output_image.save(out_file, optimize=False)
-
+    try:
+        output_image = output_image.convert("RGB")
+        contrast_factor = factor
+        enhancer = ImageEnhance.Contrast(output_image)
+        output_image = enhancer.enhance(contrast_factor)
+        output_image = output_image.quantize(colors=colors)
+        output_image = output_image.convert("L")
+        output_image.save(out_file, optimize=False)
+    except Exception as ex:
+        error('Error while saving file "' + out_file + '".')
 
 if __name__ == "__main__":
     main()
