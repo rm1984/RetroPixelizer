@@ -58,6 +58,7 @@ def main():
         error("The input image must be square (ratio 1:1).")
         sys.exit(1)
 
+    size = int(size)
     output_image = input_image.resize((size, size), resample=Image.BILINEAR).resize(
         input_image.size, Image.NEAREST
     )
