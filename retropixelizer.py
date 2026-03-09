@@ -19,7 +19,7 @@ def main():
     parser.add_argument(
         "-s",
         "--size",
-        type=str,
+        type=int,
         help="side size in pixel (default: 64)",
         default=64,
         required=False,
@@ -59,6 +59,25 @@ def main():
         sys.exit(1)
 
     size = int(size)
+    colors = int(colors)
+    factor = float(factor)
+
+    if size < 1 or size > 4096:
+        error("Size must be between 1 and 4096 pixels.")
+        sys.exit(1)
+
+    if colors < 2 or colors > 256:
+        error("Colors must be between 2 and 256.")
+        sys.exit(1)
+
+    if factor <= 0:
+        error("Contrast factor must be greater than 0.")
+        sys.exit(1)
+
+    if os.path.isfile(out_file):
+        error('Output file "' + out_file + '" already exists.')
+        sys.exit(1)
+
     output_image = input_image.resize((size, size), resample=Image.BILINEAR).resize(
         input_image.size, Image.NEAREST
     )
@@ -71,8 +90,8 @@ def main():
         output_image = output_image.quantize(colors=colors)
         output_image = output_image.convert("L")
         output_image.save(out_file, optimize=False)
-    except Exception:
-        error('Error while saving file "' + out_file + '".')
+    except Exception as e:
+        error('Error while saving file "' + out_file + '": ' + str(e))
 
 
 if __name__ == "__main__":
